@@ -1,0 +1,13 @@
+<div class="register-content">
+    <h2>Registro de asistencia</h2>
+    <hr>
+    <div class="from-group">
+        <label>
+            Agregue un archivo
+        </label>
+        <div class="file-upload-wrapper" [attr.data-text]="fileName">
+            <input #fileInput type="file" class="file-upload-field" (change)="updateFileName(fileInput)" accept=".csv">
+        </div>
+        <button>Procesar Archivo</button>
+    </div>
+</div>

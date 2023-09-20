@@ -1,0 +1,63 @@
+a{
+  margin: 20px auto auto;
+}
+
+.downloadBtn {
+  padding: 25px 0;
+  width: 50px;
+  height: 25px;
+  text-decoration: none;
+  transition: .3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+  position: relative;
+}
+
+.downloadBtn:before {
+  content: url('../../../assets/DownloadIcon.svg');
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: 2s;
+}
+
+.downloadBtn:hover:before {
+  display: none;
+}
+
+.downloadBtn:hover:after {
+  content: 'Descargar';
+  color: #2b4b19;
+  font-size: 18px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: 2s;
+  animation: fadein 2s;
+}
+
+.downloadBtn:hover {
+  width: 160px;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
