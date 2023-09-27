@@ -13,6 +13,7 @@ class Assistance_records(BaseModel):
     departure_hour = Column(Date)
 
     def __init__(self, event_id=None, assistant_id=None, duration_time=None, entry_hour=None, departure_hour=None):
+        super().__init__()
         self.event_id = event_id
         self.assistant_id = assistant_id
         self.duration_time = duration_time

@@ -28,5 +28,5 @@ class Data_process_Interface(ABC):
         pass
 
     @abstractmethod
-    def store_register_data(self, data, output_file):
+    def store_register_data(self):
         pass

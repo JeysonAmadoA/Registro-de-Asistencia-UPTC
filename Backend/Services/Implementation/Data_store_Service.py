@@ -3,17 +3,34 @@ from Config import Global_Helpers
 
 
 class Data_store_Service(Data_store_Interface):
+
+    instances = []
+
     def __init__(self, table_name):
         self.table_name = table_name
+        self.model = Global_Helpers.get_model(self.table_name)
 
-    def create_instance(self, data):
-        model = Global_Helpers.get_model(self.table_name)
-        if model:
+    def begin_transaction(self):
+        self.model.begin()
+
+    def add_instance(self, data):
+        if self.model:
             try:
-                instance = model(**data)
-                instance.store()
-                return instance
+                instance = self.model(**data)
+                self.instances.append(instance)
             except Exception as e:
-                print("Ocurrió un error al crear registro:", e)
+                print("Ocurrió un error al agregar registro:", e)
         else:
             raise ValueError("Model not found for table name")
+
+    def end_transaction(self):
+        model = self.model()
+        model.commit()
+
+    def massive_store(self):
+        model = self.model()
+        model.bulk_insert(self.instances)
+
+
+
+

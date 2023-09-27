@@ -12,6 +12,7 @@ class Assistants(BaseModel):
     subject_id = Column(Integer, ForeignKey('subjects.id'))
 
     def __init__(self, email=None, name=None, program_id=None, subject_id=None):
+        super().__init__()
         self.email = email
         self.name = name
         self.program_id = program_id
@@ -22,10 +23,8 @@ class Assistants(BaseModel):
 
     @classmethod
     def filter_by_email(cls, email):
-        db = cls.get_db()
-        return db.session.query(cls).filter(or_(cls.email == email)).first()
+        return cls.session.query(cls).filter(or_(cls.email == email)).first()
 
     @classmethod
     def filter_by_name(cls, name):
-        db = cls.get_db()
-        return db.session.query(cls).filter(or_(cls.name == name)).first()
+        return cls.session.query(cls).filter(or_(cls.name == name)).first()

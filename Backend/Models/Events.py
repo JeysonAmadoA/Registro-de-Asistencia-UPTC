@@ -9,6 +9,7 @@ class Events(BaseModel):
     event_date = Column(Date)
 
     def __init__(self, event_date=None):
+        super().__init__()
         self.event_date = event_date
 
     def __repr__(self):
@@ -16,5 +17,4 @@ class Events(BaseModel):
 
     @classmethod
     def filter_by_event_date(cls, event_date):
-        db = cls.get_db()
-        return db.session.query(cls).filter(or_(cls.event_date == event_date)).first()
+        return cls.session.query(cls).filter(or_(cls.event_date == event_date)).first()

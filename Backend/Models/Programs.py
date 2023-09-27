@@ -9,6 +9,7 @@ class Programs(BaseModel):
     program_name = Column(String(250), unique=True)
 
     def __init__(self, program_name=None):
+        super().__init__()
         self.program_name = program_name
 
     def __repr__(self):
@@ -16,5 +17,4 @@ class Programs(BaseModel):
 
     @classmethod
     def filter_by_program_name(cls, program_name):
-        db = cls.get_db()
-        return db.session.query(cls).filter(or_(cls.program_name == program_name)).first()
+        return cls.session.query(cls).filter(or_(cls.program_name == program_name)).first()

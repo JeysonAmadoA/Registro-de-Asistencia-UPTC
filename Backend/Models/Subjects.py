@@ -9,6 +9,7 @@ class Subjects(BaseModel):
     subject_name = Column(String(250), unique=True)
 
     def __init__(self, subject_name=None):
+        super().__init__()
         self.subject_name = subject_name
 
     def __repr__(self):
@@ -16,5 +17,5 @@ class Subjects(BaseModel):
 
     @classmethod
     def filter_by_subject_name(cls, subject_name):
-        db = cls.get_db()
-        return db.session.query(cls).filter(or_(cls.subject_name == subject_name)).first()
+        return cls.session.query(cls).filter(or_(cls.subject_name == subject_name)).first()
+
