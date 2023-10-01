@@ -28,3 +28,12 @@ class Assistants(BaseModel):
     @classmethod
     def filter_by_name(cls, name):
         return cls.session.query(cls).filter(or_(cls.name == name)).first()
+
+    @classmethod
+    def filter_by_program_id(cls, program_id):
+        return cls.session.query(cls).filter(cls.program_id == program_id).all()
+
+    @classmethod
+    def filter_where_not_in_programs(cls, program_exclude):
+        return cls.session.query(cls).filter(~cls.program_id.in_(program_exclude)).all()
+

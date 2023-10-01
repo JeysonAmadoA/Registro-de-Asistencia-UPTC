@@ -31,11 +31,11 @@ class BaseModel(Base):
 
     @classmethod
     def get_all(cls):
-        return cls.get_session().query(cls).all()
+        return cls.session.query(cls).all()
 
     @classmethod
     def get_by_id(cls, _id):
-        return cls.get_session().query(cls).get(_id)
+        return cls.session.query(cls).get(_id)
 
     def bulk_insert(self, models):
         self.get_session().bulk_save_objects(models)

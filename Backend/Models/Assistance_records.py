@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, and_
 from Models.Base_Model import BaseModel
 
 
@@ -21,4 +21,9 @@ class Assistance_records(BaseModel):
         self.departure_hour = departure_hour
 
     def __repr__(self):
-        return f"<Registro Asistente '{self.email}', '{self.name}', {self.program_id}, {self.subject_id}>"
+        return f"<Asistencia '{self.event_id}', '{self.assistant_id}'>"
+
+    @classmethod
+    def exist_record(cls, event_id, assistant_id):
+        result = cls.session.query(cls).filter(and_(cls.event_id == event_id, cls.assistant_id == assistant_id)).first()
+        return True if result else False

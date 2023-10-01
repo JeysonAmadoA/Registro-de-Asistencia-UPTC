@@ -6,24 +6,72 @@ import pandas as panda
 
 class Data_process_Service(Data_process_Interface):
     dataframe = None
-    subjects = None
-    programs = None
-    assistants = None
+    event = None
+    subjects = []
+    programs = []
+    assistants = []
+    assistance = []
 
     def set_dataframe(self, file_path):
         Data_process_Service.dataframe = panda.read_csv(file_path)
 
-    def clean_data(self, file_path):
-        # Implementa la lógica para cargar datos desde el archivo
-        pass
+    def clean_data(self, event_date):
+        dataframe = Data_process_Service.dataframe
+        dataframe['Nombre'] = dataframe['Nombre'].str.strip().str.title()
+        dataframe['Apellido'] = dataframe['Apellido'].str.strip().str.title()
+        dataframe['Correo electrónico'] = dataframe['Correo electrónico'].str.strip().str.lower()
+        dataframe['Duración'] = dataframe['Duración'].str.strip()
+        dataframe['Hora a la que se unió'] = dataframe['Hora a la que se unió'].str.strip()
+        dataframe['Hora a la que salió'] = dataframe['Hora a la que salió'].str.strip()
+        dataframe.fillna('No Registra', inplace=True)
 
-    def process_data(self, data):
-        # Implementa la lógica para procesar los datos
-        pass
+        dataframe['Hora a la que se unió'] = event_date + ' ' + dataframe['Hora a la que se unió']
+        dataframe['Hora a la que salió'] = event_date + ' ' + dataframe['Hora a la que salió']
 
-    def store_process_data(self, data, output_file):
-        # Implementa la lógica para guardar los datos en un archivo de salida
-        pass
+        Data_process_Service.dataframe = dataframe
+        Data_process_Service.event = {"event_date": event_date}
+
+    def process_data(self):
+        Data_store_Service('Programs')
+        Data_store_Service('Subjects')
+        index_data_assistant = Index_data_Service('Assistants').get_model()
+        for index, row in Data_process_Service.dataframe.iterrows():
+            name = row['Nombre']
+            last_name = row['Apellido']
+            email = row['Correo electrónico']
+            assistant_registered = index_data_assistant.filter_by_email(email)
+
+            if assistant_registered is None:
+                Data_process_Service.assistants.append({"name": name + ' ' + last_name,
+                                                        "email": email,
+                                                        "subject_id": None,
+                                                        "program_id": None})
+
+        self.__store_event()
+        self.__store_assistants()
+
+    def store_process_data(self):
+        index_event = Index_data_Service('Events').get_model()
+        index_assistant = Index_data_Service('Assistants').get_model()
+        store_assistance_service = Data_store_Service('Assistance_records')
+
+        for index, row in Data_process_Service.dataframe.iterrows():
+            email = row['Correo electrónico']
+            duration = row['Duración']
+            entry_hour = row['Hora a la que se unió']
+            departure_hour = row['Hora a la que salió']
+
+            self.assistance.append({"event_id": index_event.filter_by_event_date(self.event['event_date']).id,
+                                    "assistant_id": index_assistant.filter_by_email(email).id,
+                                    "duration_time": duration,
+                                    "entry_hour": entry_hour,
+                                    "departure_hour": departure_hour})
+
+        for assistance in self.assistance:
+            store_assistance_service.add_instance(assistance)
+
+        store_assistance_service.massive_store()
+        self.__reset_data()
 
     def clean_register_data(self):
         dataframe = Data_process_Service.dataframe
@@ -96,6 +144,7 @@ class Data_process_Service(Data_process_Interface):
     def store_register_data(self):
         self.__store_subjects()
         self.__store_programs()
+        self.__adjust_assistant_data()
         self.__store_assistants()
         self.__reset_data()
 
@@ -115,7 +164,6 @@ class Data_process_Service(Data_process_Interface):
     def __store_programs(self):
         store_program_service = Data_store_Service('Programs')
         program_model = Index_data_Service('Programs').get_model()
-        print(Data_process_Service.programs)
         for program in Data_process_Service.programs:
             program_exist = program_model.filter_by_program_name(program['program_name'])
             if program_exist:
@@ -126,17 +174,17 @@ class Data_process_Service(Data_process_Interface):
         store_program_service.massive_store()
 
     def __store_assistants(self):
-        self.__adjust_assistant_data()
-
         store_assistant_service = Data_store_Service('Assistants')
         assistant_model = Index_data_Service('Assistants').get_model()
         for assistant in Data_process_Service.assistants:
             assistant_exist = assistant_model.filter_by_email(assistant['email'])
+            print(assistant_exist)
             if assistant_exist:
                 print("Ya está registrado el asistente")
             else:
                 store_assistant_service.add_instance(assistant)
 
+        print(store_assistant_service.instances)
         store_assistant_service.massive_store()
 
     def __adjust_assistant_data(self):
@@ -159,6 +207,18 @@ class Data_process_Service(Data_process_Interface):
 
     def __reset_data(self):
         Data_process_Service.dataframe = None
-        Data_process_Service.subjects = None
-        Data_process_Service.programs = None
-        Data_process_Service.assistants = None
+        Data_process_Service.subjects = []
+        Data_process_Service.programs = []
+        Data_process_Service.assistants = []
+        Data_process_Service.assistance = []
+
+    def __store_event(self):
+        store_event_service = Data_store_Service('Events')
+        event_model = Index_data_Service('Events').get_model()
+        event_exist = event_model.filter_by_event_date(self.event['event_date'])
+        if event_exist:
+            print("Ya está registrado evento")
+        else:
+            store_event_service.add_instance(Data_process_Service.event)
+
+        store_event_service.massive_store()

@@ -8,15 +8,15 @@ class Data_process_Interface(ABC):
         pass
 
     @abstractmethod
-    def clean_data(self, file_path):
+    def clean_data(self, event_date):
         pass
 
     @abstractmethod
-    def process_data(self, data):
+    def process_data(self):
         pass
 
     @abstractmethod
-    def store_process_data(self, data, output_file):
+    def store_process_data(self):
         pass
 
     @abstractmethod

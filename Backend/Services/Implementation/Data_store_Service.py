@@ -30,6 +30,7 @@ class Data_store_Service(Data_store_Interface):
     def massive_store(self):
         model = self.model()
         model.bulk_insert(self.instances)
+        self.instances = []
 
 
 
