@@ -35,5 +35,7 @@ class Assistants(BaseModel):
 
     @classmethod
     def filter_where_not_in_programs(cls, program_exclude):
-        return cls.session.query(cls).filter(~cls.program_id.in_(program_exclude)).all()
+        return cls.session.query(cls).filter(
+            or_(cls.program_id.is_(None), ~cls.program_id.in_(program_exclude))
+        ).all()
 
