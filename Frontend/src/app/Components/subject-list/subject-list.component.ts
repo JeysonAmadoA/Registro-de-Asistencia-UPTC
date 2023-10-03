@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
   selector: 'app-subject-list',
@@ -8,4 +8,9 @@ import {Component, Input} from '@angular/core';
 export class SubjectListComponent {
 
   @Input() subjects: string[] = [];
+  @Output() subjectSelected: EventEmitter<string> = new EventEmitter<string>();
+
+  onSubjectSelected(selectedSubject: string) {
+    this.subjectSelected.emit(selectedSubject);
+  }
 }

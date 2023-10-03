@@ -1,4 +1,4 @@
-<app-subject-list [subjects]="subjects"></app-subject-list>
+<app-subject-list (subjectSelected)="filterData($event)" [subjects]="subjects"></app-subject-list>
 
 <app-table-content [data]="dataSource" [displayedColumns]="columns" [dateIndex]="4"></app-table-content>
 

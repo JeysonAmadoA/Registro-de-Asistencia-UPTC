@@ -1,5 +1,5 @@
 <div class="container">
     <mat-chip-listbox aria-label="Fish selection">
-        <mat-chip-option *ngFor="let subject of subjects">{{subject}}</mat-chip-option>
+        <mat-chip-option *ngFor="let subject of subjects" (click)="onSubjectSelected(subject)">{{subject}}</mat-chip-option>
     </mat-chip-listbox>
 </div>

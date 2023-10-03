@@ -2,3 +2,6 @@
 .devops/docker/develop/data
 .devops/docker/develop/postgresql
 Backend/.env
+Backend/.idea
+Frontend/node_modules
+Frontend/.angular
