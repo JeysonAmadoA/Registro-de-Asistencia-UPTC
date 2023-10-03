@@ -13,6 +13,7 @@ export class OthersComponent {
   columns: string[] = [];
   subjects: string[] = [];
   subjectFilter:string = ''
+  downloadFile:string = 'http://localhost:5000/file/generar_archivo_otros' 
 
   constructor(private indexService: IndexService ) {}
 

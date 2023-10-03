@@ -15,6 +15,7 @@ export class SystemsEngineerComponent implements OnInit {
   columns: string[] = [];
   subjects: string[] = [];
   subjectFilter:string = ''
+  downloadFile:string = 'http://localhost:5000/file/generar_archivo_sistemas' 
 
   constructor(private indexService: IndexService ) {}
 

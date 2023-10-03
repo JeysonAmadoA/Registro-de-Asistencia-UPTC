@@ -13,6 +13,7 @@ export class ElectronicEngineerComponent {
   columns: string[] = [];
   subjects: string[] = [];
   subjectFilter:string = ''
+  downloadFile:string = 'http://localhost:5000/file/generar_archivo_electronica' 
 
   constructor(private indexService: IndexService ) {}
 

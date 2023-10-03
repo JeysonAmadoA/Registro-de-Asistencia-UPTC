@@ -1,7 +1,7 @@
 <app-subject-list (subjectSelected)="filterData($event)" [subjects]="subjects"></app-subject-list>
 
-<app-table-content [data]="dataSource" [displayedColumns]="columns" [dateIndex]="3"></app-table-content>
+<app-table-content [data]="dataSource" [displayedColumns]="columns" [dateIndex]="4"></app-table-content>
 
-<download-button></download-button>
+<download-button [urlFile]="downloadFile"></download-button>
 
 

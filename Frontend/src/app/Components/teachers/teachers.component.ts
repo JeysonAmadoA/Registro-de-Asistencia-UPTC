@@ -12,6 +12,7 @@ export class TeachersComponent {
   columns: string[] = [];
   subjects: string[] = [];
   subjectFilter:string = ''
+  downloadFile:string = 'http://localhost:5000/file/generar_archivo_profesores' 
 
   constructor(private indexService: IndexService ) {}
 

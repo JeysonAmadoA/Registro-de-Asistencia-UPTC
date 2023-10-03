@@ -11,6 +11,22 @@ class Data_file_Service(Data_file_Interface):
 
     def generate_systems_engineer_file(self):
         data = self.index_service.index_systems_engineer()
+        return self.__generate_files(data, 'Sistemas')
+        
+
+    def generate_electronic_engineer_file(self):
+        data = self.index_service.index_electronic_engineer()
+        return self.__generate_files(data, 'Electrónica')
+
+    def generate_teachers_file(self):
+        data = self.index_service.index_teachers()
+        return self.__generate_files(data, 'Docentes')
+
+    def generate_others_file(self):
+        data = self.index_service.index_other()
+        return self.__generate_files(data, 'Por revisar')
+    
+    def __generate_files(self, data, filename):
         dataframe = panda.DataFrame(data)
         asignatura_counts = dataframe['Asignatura'].value_counts()
         plot.figure(figsize=(8, 8))
@@ -18,31 +34,21 @@ class Data_file_Service(Data_file_Interface):
         plot.title('Porcentaje de Datos por Asignatura')
         plot.ylabel('')
 
-        # Crear directorios y archivos
         graficos_directory = 'Storage/Graficos'
         os.makedirs(graficos_directory, exist_ok=True)
-        graficos_filename = os.path.join(graficos_directory, 'Sistemas.png')
+        graficos_filename = os.path.join(graficos_directory, filename + '.png')
         plot.savefig(graficos_filename)
 
         excel_directory = 'Storage/Xlsx'
         os.makedirs(excel_directory, exist_ok=True)
-        excel_filename = os.path.join(excel_directory, 'data.xlsx')
+        excel_filename = os.path.join(excel_directory, filename + '.xlsx')
         dataframe.to_excel(excel_filename, index=False)
 
-        with zipfile.ZipFile('Storage/Zips/Sistemas.zip', 'w') as archivo_zip:
-            archivo_zip.write(graficos_filename, arcname='Sistemas.png')
-            archivo_zip.write(excel_filename, arcname='data.xlsx')
+        with zipfile.ZipFile('Storage/Zips/'+ filename +'.zip', 'w') as archivo_zip:
+            archivo_zip.write(graficos_filename, arcname = filename + '.png')
+            archivo_zip.write(excel_filename, arcname = filename + '.xlsx')
 
-        ruta_archivo_zip = 'Storage/Zips/Sistemas.zip'
-        ruta_absoluta = os.path.abspath(ruta_archivo_zip)
+        path_zip_file = 'Storage/Zips/'+ filename +'.zip'
+        absolute_path_zip_file = os.path.abspath(path_zip_file)
 
-        return ruta_absoluta
-
-    def generate_electronic_engineer_file(self):
-        pass
-
-    def generate_teachers_file(self):
-        pass
-
-    def generate_others_file(self):
-        pass
+        return absolute_path_zip_file
