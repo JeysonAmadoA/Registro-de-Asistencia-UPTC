@@ -4,6 +4,7 @@ import pandas as panda
 import matplotlib.pyplot as plot
 import os
 import zipfile
+import re
 
 
 class Data_file_Service(Data_file_Interface):
@@ -28,12 +29,14 @@ class Data_file_Service(Data_file_Interface):
     
     def __generate_files(self, data, filename):
         dataframe = panda.DataFrame(data)
+        dataframe['Asignatura'] = dataframe['Asignatura'].str.title()
+
         asignatura_counts = dataframe['Asignatura'].value_counts()
         plot.figure(figsize=(8, 8))
         asignatura_counts.plot.pie(autopct='%1.1f%%')
         plot.title('Porcentaje de Datos por Asignatura')
         plot.ylabel('')
-
+        
         graficos_directory = 'Storage/Graficos'
         os.makedirs(graficos_directory, exist_ok=True)
         graficos_filename = os.path.join(graficos_directory, filename + '.png')
@@ -42,7 +45,18 @@ class Data_file_Service(Data_file_Interface):
         excel_directory = 'Storage/Xlsx'
         os.makedirs(excel_directory, exist_ok=True)
         excel_filename = os.path.join(excel_directory, filename + '.xlsx')
-        dataframe.to_excel(excel_filename, index=False)
+        excel_writer = panda.ExcelWriter(excel_filename, engine='xlsxwriter')
+
+        asignaturas_unicas = dataframe['Asignatura'].unique()
+        dataframe.to_excel(excel_writer, sheet_name=filename, index=False)
+        
+        for asignatura in asignaturas_unicas:
+            if asignatura is not None:
+                sheet_subject = dataframe[dataframe['Asignatura'] == asignatura]
+                sheet_name = re.sub(r'[\\/*?[\]:]', '', asignatura.strip())
+                sheet_subject.to_excel(excel_writer, sheet_name=sheet_name, index=False)
+
+        excel_writer.close()
 
         with zipfile.ZipFile('Storage/Zips/'+ filename +'.zip', 'w') as archivo_zip:
             archivo_zip.write(graficos_filename, arcname = filename + '.png')
