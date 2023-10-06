@@ -80,10 +80,10 @@ class Data_process_Service(Data_process_Interface):
         dataframe['Nombre'] = dataframe['Nombre'].str.strip()
         dataframe['Correo institucional'] = dataframe['Correo institucional'].str.strip().str.lower()
         dataframe['Programa Académico'] = dataframe['Programa Académico'].str.strip()
-        dataframe['Asignatura'] = dataframe['Asignatura'].str.strip()
+        dataframe['Asignatura'] = dataframe['Asignatura'].str.strip().str.capitalize()
 
-        dataframe['Asignatura'].fillna('No Registra', inplace=True)
-        dataframe['Nombre'].fillna('No Registra', inplace=True)
+        dataframe['Asignatura'].fillna('No registra', inplace=True)
+        dataframe['Nombre'].fillna('No registra', inplace=True)
         dataframe['Nombre'] = dataframe['Nombre'].str.title()
 
         mask = dataframe['Asignatura'].str.contains('trans', case=False, regex=True)
@@ -133,13 +133,14 @@ class Data_process_Service(Data_process_Interface):
         return dataframe
 
     def process_register_data(self):
-        Data_process_Service.subjects = Data_process_Service.dataframe['Asignatura'].unique()
-        Data_process_Service.subjects = [{"subject_name": item} for item in Data_process_Service.subjects if item]
+        self.subjects = Data_process_Service.dataframe['Asignatura'].unique()
+        self.subjects = [{"subject_name": item} for item in self.subjects if item]
 
-        Data_process_Service.programs = Data_process_Service.dataframe['Programa Académico'].unique()
-        Data_process_Service.programs = [{"program_name": item} for item in Data_process_Service.programs if item]
 
-        Data_process_Service.assistants = Data_process_Service.dataframe.to_dict(orient='records')
+        self.programs = Data_process_Service.dataframe['Programa Académico'].unique()
+        self.programs = [{"program_name": item} for item in self.programs if item]
+
+        self.assistants = Data_process_Service.dataframe.to_dict(orient='records')
 
     def store_register_data(self):
         self.__store_subjects()
@@ -152,46 +153,48 @@ class Data_process_Service(Data_process_Interface):
         store_subject_service = Data_store_Service('Subjects')
         subject_model = Index_data_Service('Subjects').get_model()
 
-        for subject in Data_process_Service.subjects:
+        for subject in self.subjects:
             subject_exist = subject_model.filter_by_subject_name(subject['subject_name'])
-            if subject_exist:
-                print("Ya está registrada la asignatura")
-            else:
+            if subject_exist is None:
                 store_subject_service.add_instance(subject)
+            else:
+                print("Ya está registrada la asignatura")
+
 
         store_subject_service.massive_store()
+        self.subjects = []
 
     def __store_programs(self):
         store_program_service = Data_store_Service('Programs')
         program_model = Index_data_Service('Programs').get_model()
-        for program in Data_process_Service.programs:
+        for program in self.programs:
             program_exist = program_model.filter_by_program_name(program['program_name'])
-            if program_exist:
-                print("Ya está registrado el programa")
-            else:
+            if program_exist is None:
                 store_program_service.add_instance(program)
+            else:
+                print("Ya está registrado el programa")
 
         store_program_service.massive_store()
+        self.programs = []
 
     def __store_assistants(self):
         store_assistant_service = Data_store_Service('Assistants')
         assistant_model = Index_data_Service('Assistants').get_model()
-        for assistant in Data_process_Service.assistants:
+        for assistant in self.assistants:
             assistant_exist = assistant_model.filter_by_email(assistant['email'])
-            print(assistant_exist)
-            if assistant_exist:
-                print("Ya está registrado el asistente")
-            else:
+            if assistant_exist is None:
                 store_assistant_service.add_instance(assistant)
+            else:
+                print("Ya está registrado el asistente")
 
-        print(store_assistant_service.instances)
         store_assistant_service.massive_store()
+        self.assistants = []
 
     def __adjust_assistant_data(self):
         index_programs = Index_data_Service('Programs').get_model()
         index_subjects = Index_data_Service('Subjects').get_model()
 
-        Data_process_Service.assistants = [
+        self.assistants = [
             {
                 "name": item["Nombre"],
                 "email": item["Correo institucional"],
@@ -202,15 +205,15 @@ class Data_process_Service(Data_process_Interface):
                     item['Asignatura']).id if index_subjects.filter_by_subject_name(
                     item['Asignatura']) is not None else None,
             }
-            for item in Data_process_Service.assistants
+            for item in self.assistants
         ]
 
     def __reset_data(self):
-        Data_process_Service.dataframe = None
-        Data_process_Service.subjects = []
-        Data_process_Service.programs = []
-        Data_process_Service.assistants = []
-        Data_process_Service.assistance = []
+        self.dataframe = None
+        self.subjects = []
+        self.programs = []
+        self.assistants = []
+        self.assistance = []
 
     def __store_event(self):
         store_event_service = Data_store_Service('Events')

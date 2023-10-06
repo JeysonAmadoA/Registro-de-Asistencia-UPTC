@@ -1,0 +1,103 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="202310061" author="JeysonAmadoA">
+        <!-- Crear la tabla "events" -->
+        <createTable tableName="events">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="event_date" type="DATE"/>
+        </createTable>
+
+        <!-- Crear la tabla "programs" -->
+        <createTable tableName="programs">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="program_name" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Crear la tabla "subjects" -->
+        <createTable tableName="subjects">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="subject_name" type="VARCHAR(250)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <!-- Crear la tabla "assistants" -->
+        <createTable tableName="assistants">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="email" type="VARCHAR(250)"/>
+            <column name="name" type="VARCHAR(250)"/>
+            <column name="program_id" type="INTEGER"/>
+            <column name="subject_id" type="INTEGER"/>
+        </createTable>
+
+        <!-- Definir las restricciones de clave foránea para la tabla "assistants" -->
+        <addForeignKeyConstraint baseTableName="assistants" baseColumnNames="program_id"
+                                 constraintName="FK_PROGRAM" referencedTableName="programs"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="assistants" baseColumnNames="subject_id"
+                                 constraintName="FK_SUBJECT" referencedTableName="subjects"
+                                 referencedColumnNames="id"/>
+
+        <!-- Crear la tabla "assistance_records" -->
+        <createTable tableName="assistance_records">
+            <column name="id" type="SERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="event_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assistant_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration_time" type="VARCHAR(250)"/>
+            <column name="entry_hour" type="DATE"/>
+            <column name="departure_hour" type="DATE"/>
+        </createTable>
+
+        <!-- Definir las restricciones de clave foránea para la tabla "assistance_records" -->
+        <addForeignKeyConstraint baseTableName="assistance_records" baseColumnNames="assistant_id"
+                                 constraintName="FK_ASSISTANT" referencedTableName="assistants"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="assistance_records" baseColumnNames="event_id"
+                                 constraintName="FK_EVENT" referencedTableName="events"
+                                 referencedColumnNames="id"/>
+
+                                 <!-- Agregar restricción UNIQUE a la tabla "assistants" -->
+
+        <addUniqueConstraint  
+            columnNames="email, name, program_id, subject_id"  
+            constraintName="full_register_unique"  
+            tableName="assistants"  
+            />  
+
+        <addUniqueConstraint  
+            columnNames="program_name"  
+            constraintName="program_unique_program_name"  
+            tableName="programs"  
+            />  
+
+        <addUniqueConstraint  
+            columnNames="subject_name"  
+            constraintName="subject_unique_subject_name"  
+            tableName="subjects"  
+            />     
+
+    </changeSet>
+
+</databaseChangeLog>

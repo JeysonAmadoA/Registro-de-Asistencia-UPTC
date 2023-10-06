@@ -5,3 +5,4 @@ Backend/.env
 Backend/.idea
 Frontend/node_modules
 Frontend/.angular
+db-migrations/liquidbase.properties

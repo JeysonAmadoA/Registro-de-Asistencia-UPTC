@@ -8,6 +8,11 @@ export class IndexService {
 
   constructor(private http:HttpClient) { }
 
+
+  registerData(){
+    return this.http.get('http://localhost:5000/process/register_data_default');
+  }
+
   getSystemEngineerData(){
     return this.http.get('http://localhost:5000/data/ingenieria_de_sistemas');
   }

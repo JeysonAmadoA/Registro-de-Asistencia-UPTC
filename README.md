@@ -26,3 +26,16 @@ Para ejecutar el proyecto se debe usar el siguiente comando en la carpeta raíz 
 docker-compose -f .devops/docker/develop/docker-compose.yml -f .devops/docker/develop/docker-compose.override.yml up --build
 
 ```
+
+
+## Ejecutar Migraciones
+
+Para ejecutar las migraciones para crear la base de datos se debe usar el siguiente comando en la carpeta raíz del proyecto
+
+
+```shell
+
+docker run -it --workdir="/project" --rm -v $PWD:/project --network=develop_uptc-register liquibase/liquibase --defaultsFile=db-migrations/liquidbase.properties --changelog-file=db-migrations/changelog.xml update
+
+```
+

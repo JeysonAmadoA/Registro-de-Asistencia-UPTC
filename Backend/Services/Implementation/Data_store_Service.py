@@ -31,6 +31,7 @@ class Data_store_Service(Data_store_Interface):
         model = self.model()
         model.bulk_insert(self.instances)
         self.instances = []
+       
 
 
 

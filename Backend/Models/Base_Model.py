@@ -38,5 +38,15 @@ class BaseModel(Base):
         return cls.session.query(cls).get(_id)
 
     def bulk_insert(self, models):
-        self.get_session().bulk_save_objects(models)
-        self.get_session().commit()
+        try:
+            session = self.get_session()
+            session.bulk_save_objects(models)
+            session.commit() 
+            models.clear()
+        except Exception as e:
+            session.rollback()  
+            print(f"Error en la inserción masiva: {str(e)}")
+        
+
+    def rollback(self):
+        self.get_session().rollback()
