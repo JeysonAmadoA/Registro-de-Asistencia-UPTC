@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IndexService } from './Services/index.service';
-import { take } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -20,11 +20,18 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.indexService.registerData()
-      .pipe(
-        take(1) 
-      )
-      .subscribe((res: any) => {
-        console.log(res);
-      });
+    .pipe(
+      take(1),
+      switchMap((resData: any) => {
+
+        return this.indexService.registerAssistance()
+          .pipe(
+            take(1)
+          );
+      })
+    )
+    .subscribe((resAssistance: any) => {
+      
+    });
   }
 }

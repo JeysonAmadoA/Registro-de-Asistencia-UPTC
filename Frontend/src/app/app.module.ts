@@ -18,6 +18,7 @@ import { ElectronicEngineerComponent } from './Components/electronic-engineer/el
 import { TeachersComponent } from './Components/teachers/teachers.component';
 import { OthersComponent } from './Components/others/others.component';
 import { TableContentComponent } from './Components/table-content/table-content.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { TableContentComponent } from './Components/table-content/table-content.
     MatTableModule,
     MatIconModule,
     MatChipsModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

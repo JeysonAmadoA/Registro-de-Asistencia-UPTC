@@ -14,22 +14,25 @@ export class TeachersComponent {
   subjectFilter:string = ''
   downloadFile:string = 'http://localhost:5000/file/generar_archivo_profesores' 
 
-  constructor(private indexService: IndexService ) {}
+  constructor(private indexService: IndexService) {}
 
   ngOnInit(): void {
-    // this.indexService.getTeachersData()
-    // .subscribe((res: any) => {
-    //   const firstObject = res[0];
-    //   const dateKeys = Object.keys(firstObject).filter(key => key !== 'Nombre' && key !== 'Correo' && key !== 'Programa' && key !== 'Asignatura');
-    //   this.columns = ['Nombre', 'Correo', 'Programa', 'Asignatura', ...dateKeys];
-    //   this.indexData = res
-    //   this.dataSource = this.indexData;
-
-    //   const filteredObjects = res.filter((obj:any) => obj.Asignatura !== null && obj.Asignatura !== undefined);
-    //   const asignaturasSet = new Set<string>(filteredObjects.map((obj:any) => obj.Asignatura));
-    //   const asignaturasArray = Array.from(asignaturasSet);
-    //   this.subjects = asignaturasArray;
-    // });
+    
+    setTimeout(() => {
+      this.indexService.getTeachersData()
+        .subscribe((res: any) => {
+          const firstObject = res[0];
+          const dateKeys = Object.keys(firstObject).filter(key => key !== 'Nombre' && key !== 'Correo' && key !== 'Programa' && key !== 'Asignatura');
+          this.columns = ['Nombre', 'Correo', 'Programa', 'Asignatura', ...dateKeys];
+          this.indexData = res
+          this.dataSource = this.indexData;
+    
+          const filteredObjects = res.filter((obj:any) => obj.Asignatura !== null && obj.Asignatura !== undefined);
+          const asignaturasSet = new Set<string>(filteredObjects.map((obj:any) => obj.Asignatura));
+          const asignaturasArray = Array.from(asignaturasSet);
+          this.subjects = asignaturasArray;
+        });
+    }, 5000); 
   }
 
   filterData(subjectFilter:string){

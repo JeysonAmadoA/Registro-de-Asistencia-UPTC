@@ -23,7 +23,7 @@ class Data_process_Service(Data_process_Interface):
         dataframe['Duración'] = dataframe['Duración'].str.strip()
         dataframe['Hora a la que se unió'] = dataframe['Hora a la que se unió'].str.strip()
         dataframe['Hora a la que salió'] = dataframe['Hora a la que salió'].str.strip()
-        dataframe.fillna('No Registra', inplace=True)
+        dataframe.fillna('No registra', inplace=True)
 
         dataframe['Hora a la que se unió'] = event_date + ' ' + dataframe['Hora a la que se unió']
         dataframe['Hora a la que salió'] = event_date + ' ' + dataframe['Hora a la que salió']

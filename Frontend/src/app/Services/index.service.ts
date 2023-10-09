@@ -13,6 +13,10 @@ export class IndexService {
     return this.http.get('http://localhost:5000/process/register_data_default');
   }
 
+  registerAssistance(){
+    return this.http.get('http://localhost:5000/process/register_assistance');
+  }
+
   getSystemEngineerData(){
     return this.http.get('http://localhost:5000/data/ingenieria_de_sistemas');
   }

@@ -20,19 +20,23 @@ export class SystemsEngineerComponent implements OnInit {
   constructor(private indexService: IndexService ) {}
 
   ngOnInit(): void {
-    // this.indexService.getSystemEngineerData()
-    // .subscribe((res: any) => {
-    //   const firstObject = res[0];
-    //   const dateKeys = Object.keys(firstObject).filter(key => key !== 'Nombre' && key !== 'Correo' && key !== 'Programa' && key !== 'Asignatura');
-    //   this.columns = ['Nombre', 'Correo', 'Programa', 'Asignatura', ...dateKeys];
-    //   this.indexData = res
-    //   this.dataSource = this.indexData;
 
-    //   const filteredObjects = res.filter((obj:any) => obj.Asignatura !== null && obj.Asignatura !== undefined);
-    //   const asignaturasSet = new Set<string>(filteredObjects.map((obj:any) => obj.Asignatura));
-    //   const asignaturasArray = Array.from(asignaturasSet);
-    //   this.subjects = asignaturasArray;
-    // });
+    setTimeout(() => {
+      this.indexService.getSystemEngineerData()
+          .subscribe((res: any) => {
+            const firstObject = res[0];
+            const dateKeys = Object.keys(firstObject).filter(key => key !== 'Nombre' && key !== 'Correo' && key !== 'Programa' && key !== 'Asignatura');
+            this.columns = ['Nombre', 'Correo', 'Programa', 'Asignatura', ...dateKeys];
+            this.indexData = res
+            this.dataSource = this.indexData;
+
+            const filteredObjects = res.filter((obj:any) => obj.Asignatura !== null && obj.Asignatura !== undefined);
+            const asignaturasSet = new Set<string>(filteredObjects.map((obj:any) => obj.Asignatura));
+            const asignaturasArray = Array.from(asignaturasSet);
+            this.subjects = asignaturasArray;
+          });
+    }, 5000);
+    
   }
 
   filterData(subjectFilter:string){
